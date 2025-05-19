@@ -1,6 +1,6 @@
 # Discord Bump Bot
 
-A Discord selfbot that automatically bumps your server using Disboard.
+A Discord selfbot that automatically bumps your server using Disboard. Made using AI
 
 ## ⚠️ Important Notice
 
