@@ -1,73 +1,51 @@
-# Discord Bump Bot
+# userbot
 
-A Discord selfbot that automatically bumps your server using Disboard. Made using AI
+A Discord self-bot that automatically bumps your server across multiple bump
+bots (DISBOARD and others). Each bump bot runs its own independent loop with its
+own channel and cooldown, waits for the bot's reply, and reschedules based on
+the actual response (success vs. cooldown). Outcomes are posted to a webhook.
 
-## ⚠️ Important Notice
-
-Using selfbots is against Discord's Terms of Service. Use this at your own risk.
+> **Warning:** Self-bots violate Discord's Terms of Service and can get your
+> account banned. Use at your own risk.
 
 ## Setup
 
-1. Install Node.js if you haven't already
-2. Clone this repository
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-4. Create a `.env` file in the root directory with the following content:
-   ```
-   TOKEN=your_discord_token_here
-   SERVER_ID=your_server_id_here
-   CHANNEL_ID=your_channel_id_here
-   WEBHOOK_URL=your_webhook_url_here
-   ```
-   To get your token:
-   - Open Discord in your browser
-   - Press F12 to open Developer Tools
-   - Go to the Network tab
-   - Look for requests to Discord's API
-   - Find the "authorization" header in the request headers
+1. `npm install`
+2. Copy `.env.example` to `.env` and fill in:
+   - `DISCORD_TOKEN` — your user account token (required)
+   - `WEBHOOK_URL` — Discord webhook for notifications (optional)
+   - `BUMP_CHANNEL` — default channel ID for DISBOARD (optional)
+3. `npm start`
 
-   To get your Server ID and Channel ID:
-   - Enable Developer Mode in Discord (Settings > Advanced > Developer Mode)
-   - Right-click on your server and select "Copy Server ID"
-   - Right-click on the channel and select "Copy Channel ID"
+Requires Node.js >= 18 (uses the global `fetch`). For long-running use, run it
+under a supervisor such as pm2 or systemd with auto-restart.
 
-   To get your Webhook URL:
-   - Go to your server settings
-   - Select "Integrations"
-   - Click "Create Webhook"
-   - Choose a channel for notifications
-   - Copy the webhook URL
+## Commands
 
-## Usage
+Type these as yourself in any channel (only your own messages are read):
 
-1. Make sure you have the Disboard bot in your server
-2. Run the bot:
-   ```bash
-   npm start
-   ```
+- `!bumpstatus` — list each bot: name, channel, enabled, approx next bump time.
+- `!setchannel <key> [#channel|id]` — set a bot's channel (defaults to current).
+- `!setbumpchannel [#channel|id]` — backward-compatible alias for the DISBOARD channel.
+- `!setwebhook <url>` — set the shared notification webhook.
+- `!enable <key>` / `!disable <key>` — toggle a bot and (re)start/stop its loop live.
+- `!bumpnow <key>` — trigger an immediate bump attempt for that bot.
 
-The bot will automatically:
-- Send the `/bump` slash command every 2 hours in the specified channel
-- Send webhook notifications about the bump status
-- Log all activities to the console
+Invalid keys reply with the list of valid keys.
 
-## Features
+## Adding / enabling another bump bot
 
-- Automatically bumps your server every 2 hours using slash commands
-- Targets a specific server and channel
-- Webhook notifications for bump status
-- Error handling and logging
-- Easy to configure
+Bots are config-driven via the `BUMP_BOTS` array in `selfbot.js`. To add or
+enable one:
 
-## Configuration
+1. Edit the entry in `BUMP_BOTS` (or add a new one) with the bot's real
+   application ID (`botId`), slash `command`, `cooldownMs`, and the lowercase
+   `successPattern` / `cooldownPattern` substrings from its reply embed.
+2. Verify the `botId` in-server (entries shipped with an empty ID or
+   `defaultEnabled: false` are marked `// TODO: verify botId before enabling`).
+3. Set its channel: `!setchannel <key> #channel`.
+4. Enable it: `!enable <key>`.
 
-You can modify the following variables in `index.js`:
-- `BUMP_INTERVAL`: Time between bumps (default: 2 hours)
-
-And in your `.env` file:
-- `TOKEN`: Your Discord token
-- `SERVER_ID`: The ID of your target server
-- `CHANNEL_ID`: The ID of your target channel
-- `WEBHOOK_URL`: Your Discord webhook URL for status notifications 
+DISBOARD (`disboard`) is enabled by default. Other listed bots
+(`discadia`, `disforge`, `discordscom`, `dsme`) are present but disabled
+pending verification of their bot IDs and reply wording.
