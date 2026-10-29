@@ -17,3 +17,7 @@ pids
 # IDE
 .vscode/
 .idea/ 
+# Runtime settings (holds your webhook URL)
+settings.json
+settings.json.tmp
+settings.json.corrupt-*

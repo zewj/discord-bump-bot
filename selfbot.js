@@ -1,11 +1,10 @@
 const { Client } = require('discord.js-selfbot-v13');
 const fs = require('fs').promises;
 const path = require('path');
-require('dotenv').config();
+// Load .env if present (built into Node, no dotenv needed).
+try { process.loadEnvFile(); } catch {}
 
-const client = new Client({
-  checkUpdate: false,
-});
+const client = new Client();
 
 // ---------------------------------------------------------------------------
 // Config-driven multi-bot definitions
@@ -630,6 +629,10 @@ async function loginWithBackoff() {
     await client.login(process.env.DISCORD_TOKEN);
     loginAttempts = 0;
   } catch (error) {
+    if (error.code === 'TOKEN_INVALID') {
+      console.error('FATAL: DISCORD_TOKEN is invalid. Update it in .env.');
+      process.exit(1);
+    }
     loginAttempts++;
     const wait = Math.min(60000, 5000 * loginAttempts);
     console.error(`Login failed (attempt ${loginAttempts}): ${error.message}. Retrying in ${Math.round(wait / 1000)}s...`);

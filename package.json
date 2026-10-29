@@ -1,6 +1,6 @@
 {
   "name": "userbot",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "commonjs",
   "description": "Discord self-bot that auto-bumps servers across multiple bump bots.",
@@ -9,11 +9,10 @@
     "start": "node selfbot.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20.18"
   },
   "dependencies": {
     "debug": "^4.4.3",
-    "discord.js-selfbot-v13": "^3.1.0",
-    "dotenv": "^16.4.5"
+    "discord.js-selfbot-v13": "^3.7.1"
   }
 }

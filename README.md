@@ -17,7 +17,7 @@ the actual response (success vs. cooldown). Outcomes are posted to a webhook.
    - `BUMP_CHANNEL` — default channel ID for DISBOARD (optional)
 3. `npm start`
 
-Requires Node.js >= 18 (uses the global `fetch`). For long-running use, run it
+Requires Node.js >= 20.18. For long-running use, run it
 under a supervisor such as pm2 or systemd with auto-restart.
 
 ## Commands
